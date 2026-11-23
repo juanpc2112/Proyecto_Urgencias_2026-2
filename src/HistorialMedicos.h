@@ -24,8 +24,6 @@ public:
     int cantidadMedicos() const;
     // Muestra las jornadas de un médico.
     void mostrarHistorial(const std::string& identificacion) const;
-    // Muestra el resumen de todos los médicos y sus jornadas.
-    void mostrarTodos() const;
 
 private:
     std::map<std::string, std::vector<RegistroJornada>> jornadasPorMedico; // Historial agrupado por ID.

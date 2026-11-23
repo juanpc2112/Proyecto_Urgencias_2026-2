@@ -40,48 +40,49 @@ bool SimuladorUrgencias::iniciarJornada(bool reemplazo) {
 
 void SimuladorUrgencias::ejecutar() {
     std::cout << "SIMULADOR DE URGENCIAS\n";
-    if (!iniciarJornada(false)) return;
-
-    bool continuarCiclo = true;
-    while (continuarCiclo && !finalizar) {
-        if (!hayJornada || !jornada.puedeRealizarTurno()) {
-            cerrarJornada();
-            finalizar = true;
-            continuarCiclo = false;
-        } else {
-            interfaz.mostrarEstado(sala, cola, jornada);
-            std::string accion;
-            if (!interfaz.leerAccion(accion) || !procesarAccion(accion)) {
+    if (iniciarJornada(false)) {
+        bool continuarCiclo = true;
+        while (continuarCiclo && !finalizar) {
+            if (!hayJornada || !jornada.puedeRealizarTurno()) {
                 cerrarJornada();
                 finalizar = true;
                 continuarCiclo = false;
+            } else {
+                interfaz.mostrarEstado(sala, cola, jornada);
+                std::string accion;
+                if (!interfaz.leerAccion(accion) || !procesarAccion(accion)) {
+                    cerrarJornada();
+                    finalizar = true;
+                    continuarCiclo = false;
+                }
             }
         }
+        auditarPerdidos();
+        std::cout << "Medicos con jornadas cerradas: " << historial.cantidadMedicos() << '\n';
     }
-    auditarPerdidos();
-    std::cout << "Medicos con jornadas cerradas: " << historial.cantidadMedicos() << '\n';
 }
 
 void SimuladorUrgencias::completarTurno() {
-    if (!hayJornada) return;
-    jornada.registrarTurnoValido();
-    cola.avanzarEspera();
-    std::list<Paciente*> vencidos = cola.retirarVencidos();
-    for (Paciente* paciente : vencidos) {
-        paciente->fijarResponsable(jornada.obtenerMedico().obtenerNombre(), jornada.obtenerNumero());
-        jornada.metricas().registrarPerdida();
-        std::cout << "ALERTA: paciente " << paciente->obtenerNombre() << " (CC "
-                  << paciente->obtenerCedula() << ") se perdio por exceder su espera.\n";
-    }
-    int turnoActual = jornada.obtenerTurnoActual();
-    int cantidadNuevos = 0;
-    if (turnoActual == 10) cantidadNuevos = 1;
-    else if (turnoActual == 20) cantidadNuevos = 2;
-    else if (turnoActual == 30) cantidadNuevos = 3;
-    else if (turnoActual == 40) cantidadNuevos = 4;
+    if (hayJornada) {
+        jornada.registrarTurnoValido();
+        cola.avanzarEspera();
+        std::list<Paciente*> vencidos = cola.retirarVencidos();
+        for (Paciente* paciente : vencidos) {
+            paciente->fijarResponsable(jornada.obtenerMedico().obtenerNombre(), jornada.obtenerNumero());
+            jornada.metricas().registrarPerdida();
+            std::cout << "ALERTA: paciente " << paciente->obtenerNombre() << " (CC "
+                      << paciente->obtenerCedula() << ") se perdio por exceder su espera.\n";
+        }
+        int turnoActual = jornada.obtenerTurnoActual();
+        int cantidadNuevos = 0;
+        if (turnoActual == 10) cantidadNuevos = 1;
+        else if (turnoActual == 20) cantidadNuevos = 2;
+        else if (turnoActual == 30) cantidadNuevos = 3;
+        else if (turnoActual == 40) cantidadNuevos = 4;
 
-    for (int i = 0; i < cantidadNuevos; ++i) {
-        generarPacienteAutomatico();
+        for (int i = 0; i < cantidadNuevos; ++i) {
+            generarPacienteAutomatico();
+        }
     }
 }
 
@@ -112,15 +113,15 @@ void SimuladorUrgencias::generarPacienteAutomatico() {
     std::string cedula = generarCedula();
     if (cedula.empty()) {
         std::cout << "No quedan cedulas disponibles en el rango 0000-9999.\n";
-        return;
+    } else {
+        const CasoPaciente& caso = casos[static_cast<std::size_t>(casoAleatorio(generador))];
+        Paciente nuevo(cedula, caso.nombre, caso.gravedad, caso.condicion,
+                       jornada.obtenerTurnoActual(), ordenLlegada++);
+        Paciente* almacenado = registro.registrar(nuevo);
+        cola.insertar(almacenado);
+        std::cout << "Nuevo paciente en triage: " << almacenado->obtenerNombre() << " (CC "
+                  << almacenado->obtenerCedula() << "), gravedad " << almacenado->obtenerGravedad() << ".\n";
     }
-    const CasoPaciente& caso = casos[static_cast<std::size_t>(casoAleatorio(generador))];
-    Paciente nuevo(cedula, caso.nombre, caso.gravedad, caso.condicion,
-                   jornada.obtenerTurnoActual(), ordenLlegada++);
-    Paciente* almacenado = registro.registrar(nuevo);
-    cola.insertar(almacenado);
-    std::cout << "Nuevo paciente en triage: " << almacenado->obtenerNombre() << " (CC "
-              << almacenado->obtenerCedula() << "), gravedad " << almacenado->obtenerGravedad() << ".\n";
 }
 
 std::string SimuladorUrgencias::normalizarCedula(const std::string& entrada) const {
@@ -237,10 +238,11 @@ bool SimuladorUrgencias::procesarAccion(const std::string& linea) {
 }
 
 void SimuladorUrgencias::cerrarJornada() {
-    if (!hayJornada || !jornada.estaActiva()) return;
-    jornada.cerrar(sala.contarCamasVacias());
-    interfaz.mostrarReporte(jornada);
-    historial.guardar(jornada);
+    if (hayJornada && jornada.estaActiva()) {
+        jornada.cerrar(sala.contarCamasVacias());
+        interfaz.mostrarReporte(jornada);
+        historial.guardar(jornada);
+    }
 }
 
 void SimuladorUrgencias::auditarPerdidos() const {

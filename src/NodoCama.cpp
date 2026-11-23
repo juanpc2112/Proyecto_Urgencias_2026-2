@@ -60,14 +60,6 @@ Paciente* NodoCama::liberar() {
     return paciente;
 }
 
-bool NodoCama::establecerMantenimiento(bool mantenimiento) {
-    if (estado == EstadoCama::Ocupada) {
-        return false;
-    }
-    estado = mantenimiento ? EstadoCama::Mantenimiento : EstadoCama::Vacia;
-    return true;
-}
-
 void NodoCama::establecerAnterior(NodoCama* anterior) {
     this->anterior = anterior;
 }

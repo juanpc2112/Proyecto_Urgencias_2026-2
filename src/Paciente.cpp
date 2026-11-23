@@ -20,9 +20,6 @@ const std::string& Paciente::obtenerMedicoResponsable() const {
 int Paciente::obtenerGravedad() const {
     return gravedad;
 }
-int Paciente::obtenerTurnoLlegada() const {
-    return turnoLlegada;
-}
 int Paciente::obtenerOrdenLlegada() const {
     return ordenLlegada;
 }
@@ -31,9 +28,6 @@ int Paciente::obtenerEsperaMinutos() const {
 }
 int Paciente::obtenerTurnosEspera() const {
     return turnosEspera;
-}
-int Paciente::obtenerRiesgoCritico() const {
-    return riesgoCritico;
 }
 int Paciente::obtenerJornadaResponsable() const {
     return jornadaResponsable;

@@ -19,11 +19,9 @@ public:
     const std::string& obtenerCondicion() const;
     const std::string& obtenerMedicoResponsable() const;
     int obtenerGravedad() const;
-    int obtenerTurnoLlegada() const;
     int obtenerOrdenLlegada() const;
     int obtenerEsperaMinutos() const;
     int obtenerTurnosEspera() const;
-    int obtenerRiesgoCritico() const;
     int obtenerJornadaResponsable() const;
     // Calcula el límite de espera según la gravedad.
     int turnosMaximosEspera() const;

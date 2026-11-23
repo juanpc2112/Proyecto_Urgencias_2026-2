@@ -25,8 +25,6 @@ public:
     bool tratarPaciente();
     // Libera una cama cuando el tratamiento terminó.
     Paciente* liberar();
-    // Cambia una cama vacía entre los estados vacía y mantenimiento.
-    bool establecerMantenimiento(bool mantenimiento);
     // Configura los enlaces de la lista doblemente enlazada.
     void establecerAnterior(NodoCama* anterior);
     void establecerSiguiente(NodoCama* siguiente);

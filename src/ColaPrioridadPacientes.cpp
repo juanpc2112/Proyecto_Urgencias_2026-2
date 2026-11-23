@@ -36,17 +36,6 @@ int ColaPrioridadPacientes::cantidad() const {
     return static_cast<int>(pendientes.size());
 }
 
-int ColaPrioridadPacientes::cantidadPorGravedad(int gravedad) const {
-    int cantidad = 0;
-    std::vector<Paciente*> pacientes = obtenerPacientes();
-    for (Paciente* paciente : pacientes) {
-        if (paciente->obtenerGravedad() == gravedad) {
-            ++cantidad;
-        }
-    }
-    return cantidad;
-}
-
 void ColaPrioridadPacientes::avanzarEspera() {
     std::vector<Paciente*> pacientes = obtenerPacientes();
     for (Paciente* paciente : pacientes) {
@@ -74,9 +63,6 @@ std::list<Paciente*> ColaPrioridadPacientes::retirarVencidos() {
     return vencidos;
 }
 
-void ColaPrioridadPacientes::limpiar() {
-    pendientes = decltype(pendientes)();
-}
 
 std::string ColaPrioridadPacientes::resumen() const {
     std::string salida;

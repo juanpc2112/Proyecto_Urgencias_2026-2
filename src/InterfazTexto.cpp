@@ -57,23 +57,23 @@ void InterfazTexto::mostrarEstado(const SalaUrgencias& sala, const ColaPrioridad
 void InterfazTexto::mostrarPaciente(const Paciente* paciente) const {
     if (paciente == nullptr) {
         std::cout << "No se encontro un paciente con esa cedula.\n";
-        return;
+    } else {
+        std::cout << "Cedula: " << paciente->obtenerCedula() << "\nNombre: " << paciente->obtenerNombre()
+                  << "\nGravedad: " << paciente->obtenerGravedad() << "\nCondicion: "
+                  << paciente->obtenerCondicion() << "\nEspera acumulada: " << paciente->obtenerEsperaMinutos()
+                  << " minutos\nEstado: ";
+        EstadoPaciente estado = paciente->obtenerEstado();
+        switch (estado) {
+            case EstadoPaciente::EnCola: std::cout << "En cola"; break;
+            case EstadoPaciente::EnCama: std::cout << "En cama"; break;
+            case EstadoPaciente::DadoDeAlta: std::cout << "Dado de alta"; break;
+            case EstadoPaciente::Perdido: std::cout << "Perdido"; break;
+        }
+        if (!paciente->obtenerMedicoResponsable().empty())
+            std::cout << "\nMedico/jornada responsable: " << paciente->obtenerMedicoResponsable()
+                      << " / " << paciente->obtenerJornadaResponsable();
+        std::cout << '\n';
     }
-    std::cout << "Cedula: " << paciente->obtenerCedula() << "\nNombre: " << paciente->obtenerNombre()
-              << "\nGravedad: " << paciente->obtenerGravedad() << "\nCondicion: "
-              << paciente->obtenerCondicion() << "\nEspera acumulada: " << paciente->obtenerEsperaMinutos()
-              << " minutos\nEstado: ";
-    EstadoPaciente estado = paciente->obtenerEstado();
-    switch (estado) {
-        case EstadoPaciente::EnCola: std::cout << "En cola"; break;
-        case EstadoPaciente::EnCama: std::cout << "En cama"; break;
-        case EstadoPaciente::DadoDeAlta: std::cout << "Dado de alta"; break;
-        case EstadoPaciente::Perdido: std::cout << "Perdido"; break;
-    }
-    if (!paciente->obtenerMedicoResponsable().empty())
-        std::cout << "\nMedico/jornada responsable: " << paciente->obtenerMedicoResponsable()
-                  << " / " << paciente->obtenerJornadaResponsable();
-    std::cout << '\n';
 }
 
 void InterfazTexto::mostrarReporte(const Jornada& jornada) const {

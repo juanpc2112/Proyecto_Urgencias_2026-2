@@ -22,11 +22,9 @@ public:
     // Consultas de cantidad y contenido.
     bool vacia() const;
     int cantidad() const;
-    int cantidadPorGravedad(int gravedad) const;
     // Avanza la espera y retira a quienes alcanzaron su límite.
     void avanzarEspera();
     std::list<Paciente*> retirarVencidos();
-    void limpiar();
     // Produce un resumen agrupado por gravedad.
     std::string resumen() const;
     // Devuelve una copia ordenada para mostrar pacientes sin alterar la cola.
