@@ -63,7 +63,6 @@ void SalaUrgencias::ubicarMedicoEnEntrada() {
 void SalaUrgencias::mostrar() const {
     for (const NodoCama& nodo : camas) {
         std::cout << "[";
-        if (nodo.obtenerNumero() < 10) std::cout << ' ';
         std::cout << '#' << nodo.obtenerNumero() << ':';
         if (nodo.obtenerEstado() == EstadoCama::Mantenimiento) std::cout << "MANT";
         else if (nodo.obtenerPaciente()) std::cout << 'P' << nodo.obtenerPaciente()->obtenerGravedad();
