@@ -3,15 +3,16 @@
 
 #include "Paciente.h"
 #include <list>
-#include <set>
+#include <queue>
 #include <string>
+#include <vector>
 
-// Ordena por gravedad ascendente y, en empate, por orden de llegada.
+// Deja arriba la gravedad más alta (1) y, en empate, la llegada más antigua.
 struct ComparadorPrioridadPaciente {
     bool operator()(const Paciente* a, const Paciente* b) const;
 };
 
-// TAD de espera implementado con un conjunto STL ordenado.
+// TAD de espera implementado con una cola de prioridad de la STL.
 class ColaPrioridadPacientes {
 public:
     // Inserta un paciente que se encuentra en estado EnCola.
@@ -28,10 +29,11 @@ public:
     void limpiar();
     // Produce un resumen agrupado por gravedad.
     std::string resumen() const;
-    const std::set<Paciente*, ComparadorPrioridadPaciente>& pacientes() const;
+    // Devuelve una copia ordenada para mostrar pacientes sin alterar la cola.
+    std::vector<Paciente*> obtenerPacientes() const;
 
 private:
-    std::set<Paciente*, ComparadorPrioridadPaciente> pendientes; // Pacientes en espera ordenados por prioridad.
+    std::priority_queue<Paciente*, std::vector<Paciente*>, ComparadorPrioridadPaciente> pendientes;
 };
 
 #endif

@@ -45,7 +45,7 @@ void InterfazTexto::mostrarEstado(const SalaUrgencias& sala, const ColaPrioridad
         std::cout << (cama.obtenerEstado() == EstadoCama::Mantenimiento ? " (mantenimiento)" : " (vacia)");
     }
     std::cout << "\nCola (" << cola.cantidad() << "): " << cola.resumen() << '\n';
-    for (const auto& paciente : cola.pacientes()) {
+    for (Paciente* paciente : cola.obtenerPacientes()) {
         int restantes = paciente->turnosMaximosEspera() - paciente->obtenerTurnosEspera();
         if (restantes <= 2)
             std::cout << "  ALERTA: " << paciente->obtenerNombre() << " (CC " << paciente->obtenerCedula()
