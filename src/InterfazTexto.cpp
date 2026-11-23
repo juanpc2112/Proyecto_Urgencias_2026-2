@@ -63,7 +63,8 @@ void InterfazTexto::mostrarPaciente(const Paciente* paciente) const {
               << "\nGravedad: " << paciente->obtenerGravedad() << "\nCondicion: "
               << paciente->obtenerCondicion() << "\nEspera acumulada: " << paciente->obtenerEsperaMinutos()
               << " minutos\nEstado: ";
-    switch (paciente->obtenerEstado()) {
+    EstadoPaciente estado = paciente->obtenerEstado();
+    switch (estado) {
         case EstadoPaciente::EnCola: std::cout << "En cola"; break;
         case EstadoPaciente::EnCama: std::cout << "En cama"; break;
         case EstadoPaciente::DadoDeAlta: std::cout << "Dado de alta"; break;

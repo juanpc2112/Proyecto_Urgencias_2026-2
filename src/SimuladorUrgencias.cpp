@@ -42,17 +42,20 @@ void SimuladorUrgencias::ejecutar() {
     std::cout << "SIMULADOR DE URGENCIAS\n";
     if (!iniciarJornada(false)) return;
 
-    while (!finalizar) {
+    bool continuarCiclo = true;
+    while (continuarCiclo && !finalizar) {
         if (!hayJornada || !jornada.puedeRealizarTurno()) {
             cerrarJornada();
             finalizar = true;
-            break;
-        }
-        interfaz.mostrarEstado(sala, cola, jornada);
-        std::string accion;
-        if (!interfaz.leerAccion(accion) || !procesarAccion(accion)) {
-            cerrarJornada();
-            finalizar = true;
+            continuarCiclo = false;
+        } else {
+            interfaz.mostrarEstado(sala, cola, jornada);
+            std::string accion;
+            if (!interfaz.leerAccion(accion) || !procesarAccion(accion)) {
+                cerrarJornada();
+                finalizar = true;
+                continuarCiclo = false;
+            }
         }
     }
     auditarPerdidos();
